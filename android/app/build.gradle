@@ -1,13 +1,14 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
-
-apply from: project(':react-native-config').projectDir.getPath() + '/dotenv.gradle'
-
 project.ext.envConfigFiles = [
-       development: ".env.development",
-        staging :".env.staging",
-        production:'.env.production']
+    debug: ".env.development",
+    release: ".env.production",
+    anothercustombuild: ".env",
+]
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
+
 // android {
 //     flavorDimensions 'env'
 //     productFlavors {
@@ -104,7 +105,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        resValue 'string', 'build_config_package','com.reactnativesetup'
+        resValue 'string', 'build_config_package','com.environment'
+        // resValue "string", "build_config_package", "YOUR_PACKAGE_NAME_IN_ANDROIDMANIFEST_XML"
     }
     signingConfigs {
         debug {
@@ -126,26 +128,14 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
-    flavorDimensions 'env'
-    productFlavors {
-        development {
-            dimension 'env'
-            applicationIdSuffix ".development"
-        }
-        staging {
-            dimension 'env'
-            applicationIdSuffix ".staging"
-        }
-        production {
-            dimension 'env'
-            applicationIdSuffix ""
-        }
-    }
+    
 }
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+    	implementation project(':react-native-config')
+
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
